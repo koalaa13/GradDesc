@@ -3,20 +3,19 @@ import numpy as np
 
 
 def f(xs):
-    return 5 * np.log(1 + xs[0] ** 2) + 10 * np.sin(xs[1] / 10)
+    return np.log(1 + xs[0] ** 2) + 10 * np.sin(xs[1] / 10)
 
 
 def grad(xs):
-    return np.array([10 * xs[0] / (1 + xs[0] ** 2), np.cos(xs[1] / 10)])
+    return np.array([2 * xs[0] / (1 + xs[0] ** 2), np.cos(xs[1] / 10)])
 
 
 def gradient_descent(learning_rate):
-    eps = 1e-5
+    eps = 1e-3
     epoch = 100
     point = np.array([-5, 0])
 
-    points = np.zeros((epoch, 2))
-    points[0] = point
+    points = np.array([point])
 
     for i in range(1, epoch):
         next_point = point - learning_rate * np.array(grad(point))
@@ -25,7 +24,8 @@ def gradient_descent(learning_rate):
         if distance < eps:
             return i, point, points
 
-        points[i] = point = next_point
+        point = next_point
+        points = np.append(points, [point], axis=0)
     return epoch, point, points
 
 
@@ -49,7 +49,7 @@ axs[1].set_ylabel("Epochs")
 axs[1].plot(learning_rate_iterations, final_epochs)
 
 # Best result:
-epochs, point, points = gradient_descent(0.75)
+epochs, point, points = gradient_descent(0.9)
 tX = np.linspace(-10, 10, 1000)
 tY = np.linspace(-20, 0, 1000)
 X, Y = np.meshgrid(tX, tY)
